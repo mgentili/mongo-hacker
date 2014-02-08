@@ -12,16 +12,26 @@ mongo_hacker_config = {
     // [<color>, <bold>, <underline>]
     // Colors available: red, green, yellow, blue, magenta, cyan
     colors: {
+        'key':        [ 'yellow', false, false],
         'number':     [ 'blue', false, false ],
-        'null':       [ 'red', false, false ],
-        'undefined':  [ 'magenta', false, false ],
-        'objectid':   [ 'green', false, false ],
-        'string':     [ 'green', false, false ],
-        'function':   [ 'magenta', false, false ],
+        'boolean':    [ 'blue', false, false],
+        'string':     [ 'yellow', false, false ],
         'date':       [ 'blue', false, false ],
-        'uuid':       [ 'cyan', false, false]
+        'objectid':   [ 'green', false, false ],
+        'null':       [ 'red', false, false ],
+        'undefined':  [ 'magenta', true, false ],
+        'function':   [ 'magenta', false, false ],
+        'uuid':       [ 'cyan', false, false],
+        'slow_response': ['red', true, false],
+        'regular_response': ['green', true, false],
+        'shard':  [ 'cyan', false, false],
+        'collection': [ 'green', true, false],
+        'db_name':    [ 'green', true, false],
+        'help':       [ 'green', false, false]
     }
 }
+
+__color = mongo_hacker_config.colors;
 
 if (mongo_hacker_config['show_banner']) {
     print(mongo_hacker_config['banner_message'] + mongo_hacker_config['version']);

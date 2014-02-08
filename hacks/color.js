@@ -6,7 +6,7 @@ __ansi = {
     reset: '0',
     text_prop: 'm',
     foreground: '3',
-    bright: '1',
+    bold: '1',
     underline: '4',
 
     colors: {
@@ -26,7 +26,7 @@ function controlCode( parameters ) {
     else if (typeof(parameters) == 'object' && (parameters instanceof Array)) {
         parameters = parameters.join(';');
     }
-
+    //print(String(parameters));
     return __ansi.csi + String(parameters) + String(__ansi.text_prop);
 };
 
@@ -34,14 +34,14 @@ function applyColorCode( string, properties ) {
     return controlCode(properties) + String(string) + controlCode();
 };
 
-function colorize( string, color, bright, underline ) {
+function colorize( string, color_properties) {
     var params = [];
-    var code = __ansi.foreground + __ansi.colors[color];
-
+    var code = __ansi.foreground + __ansi.colors[color_properties[0]];
+    //print(code);
     params.push(code);
 
-    if ( bright === true ) params.push(__ansi.bright);
-    if ( underline === true ) params.push(__ansi.underline);
+    if ( color_properties[1] === true ) params.push(__ansi.bold);
+    if ( color_properties[2] === true ) params.push(__ansi.underline);
 
     return applyColorCode( string, params );
 };

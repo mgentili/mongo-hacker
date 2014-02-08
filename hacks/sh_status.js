@@ -53,7 +53,7 @@ printShardingStatus = function( configDB , verbose ){
                                         output( "        " +
                                             tojson( chunk.min, 0, true) + " -> " +
                                             tojson( chunk.max, 0, true ) +
-                                            " on: " + colorize(chunk.shard, "cyan") + " " +
+                                            " on: " + colorize(chunk.shard, __color['shard']) + " " +
                                             ( chunk.jumbo ? "jumbo " : "" )
                                         );
                                     }

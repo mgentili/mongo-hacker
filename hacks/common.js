@@ -14,7 +14,7 @@ Date.prototype.tojson = function() {
   var isoDateString = dateToJson.call(this);
   var dateString = isoDateString.substring(8, isoDateString.length-1);
 
-  var isodate = colorize(dateString, 'cyan');
+  var isodate = colorize(dateString, __color['date']);
   return 'ISODate(' + isodate + ')';
 };
 
@@ -49,20 +49,20 @@ Array.tojson = function( a , indent , nolint ){
 };
 
 NumberLong.prototype.tojson = function() {
-    return 'NumberLong(' + colorize('"' + this.toString().match(/-?\d+/)[0] + '"', "red") + ')';
+    return 'NumberLong(' + colorize('"' + this.toString().match(/-?\d+/)[0] + '"', __color['number']) + ')';
 };
 
 NumberInt.prototype.tojson = function() {
-    return 'NumberInt(' + colorize('"' + this.toString().match(/-?\d+/)[0] + '"', "red") + ')';
+    return 'NumberInt(' + colorize('"' + this.toString().match(/-?\d+/)[0] + '"', __color['number']) + ')';
 };
 
 BinData.prototype.tojson = function(indent , nolint) {
     if (this.subtype() === 3) {
-        return 'UUID(' + colorize('"' + uuidToString(this) + '"', "cyan") + ', ' + colorize('"' + mongo_hacker_config['uuid_type'] + '"', "cyan") + ')'
+        return 'UUID(' + colorize('"' + uuidToString(this) + '"', "cyan") + ', ' + colorize(mongo_hacker_config['uuid_type'], __color['uuid']) + ')'
     } else if (this.subtype() === 4) {
-        return 'UUID(' + colorize('"' + uuidToString(this, "default") + '"', "cyan") + ')'
+        return 'UUID(' + colorize('"' + uuidToString(this, "default") + '"', __color['uuid']) + ')'
     } else {
-        return 'BinData(' + colorize(this.subtype(), "red") + ', ' + colorize('"' + this.base64() + '"', "green", true) + ')';
+        return 'BinData(' + colorize(this.subtype(), __color['null']) + ', ' + colorize('"' + this.base64() + '"', ["green", true, false]) + ')';
     }
 };
 
@@ -83,9 +83,9 @@ DBQuery.prototype.shellPrint = function(){
             var slowms = getSlowms();
             var fetched = "Fetched " + n + " record(s) in ";
             if (time > slowms) {
-                fetched += colorize(time + "ms", "red", true);
+                fetched += colorize(time + "ms", ["red", true, false]);
             } else {
-                fetched += colorize(time + "ms", "green", true);
+                fetched += colorize(time + "ms", ["green", true, false]);
             }
             output.push(fetched);
         }
@@ -103,9 +103,9 @@ DBQuery.prototype.shellPrint = function(){
             if (type !== undefined) {
                 var index_use = "Index[";
                 if (type == "BasicCursor") {
-                    index_use += colorize( "none", "red", true);
+                    index_use += colorize( "none", ["red", true, false]);
                 } else {
-                    index_use += colorize( result.cursor.substring(12), "green", true );
+                    index_use += colorize( result.cursor.substring(12), ["green", true, false] );
                 }
                 index_use += "]";
                 output.push(index_use);
@@ -114,7 +114,7 @@ DBQuery.prototype.shellPrint = function(){
 
         if ( this.hasNext() ) {
             ___it___  = this;
-            output.push("More[" + colorize("true", "green", true) + "]");
+            output.push("More[" + colorize("true", ["green", true, false]) + "]");
         }
         print(output.join(" -- "));
     }
@@ -166,7 +166,7 @@ tojsonObject = function( x, indent, nolint ) {
         if ( val == DB.prototype || val == DBCollection.prototype )
             continue;
 
-        s += indent + colorize("\"" + key + "\"", "yellow") + ": " + tojson( val, indent , nolint );
+        s += indent + colorize("\"" + key + "\"", __color['key']) + ": " + tojson( val, indent , nolint );
         if (num != total) {
             s += ",";
             num++;
@@ -182,13 +182,13 @@ tojsonObject = function( x, indent, nolint ) {
 
 tojson = function( x, indent , nolint ) {
     if ( x === null )
-        return colorize("null", "red", true);
+        return colorize("null", __color['null']);
 
     if ( x === undefined )
-        return colorize("undefined", "magenta", true);
+        return colorize("undefined", __color['undefined']);
 
     if ( x.isObjectId ) {
-        return 'ObjectId(' + colorize('"' + x.str + '"', "green", false, true) + ')';
+        return 'ObjectId(' + colorize('"' + x.str + '"', __color['string']) + ')';
     }
 
     if (!indent)
@@ -219,12 +219,12 @@ tojson = function( x, indent , nolint ) {
             }
         }
         s += "\"";
-        return colorize(s, "green", true);
+        return colorize(s, __color['string']);
     }
     case "number":
-        return colorize(x, "red");
+        return colorize(x, __color['number']);
     case "boolean":
-        return colorize("" + x, "blue");
+        return colorize("" + x, __color['boolean']);
     case "object": {
         s = tojsonObject( x, indent , nolint );
         if ( ( nolint === null || nolint === true ) && s.length < 80 && ( indent === null || indent.length === 0 ) ){
@@ -233,7 +233,7 @@ tojson = function( x, indent , nolint ) {
         return s;
     }
     case "function":
-        return colorize(x.toString(), "magenta");
+        return colorize(x.toString(), __color['function']);
     default:
         throw "tojson can't handle type " + ( typeof x );
     }
